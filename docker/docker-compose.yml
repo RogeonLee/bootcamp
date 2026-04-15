@@ -1,0 +1,17 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    depends_on:   # api 서버는 db 서버가 먼저 실행되어야 하므로 depends_on을 사용하여 db 서비스에 의존성을 설정합니다.
+      - db  
+
+db:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: app_db
+    ports:
+      - "33060:3306" # MySQL의 기본 포트인 3306을 호스트의 33060 포트로 매핑합니다. 이렇게 하면 호스트에서 MySQL에 접근할 수 있습니다.
+
+        
