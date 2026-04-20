@@ -1,5 +1,5 @@
 fastapi[standard]
 sqlalchemy
-pymysql
+aiomysql # 비동기에서 사용하는 파이썬 mysql
 cryptography
 redis

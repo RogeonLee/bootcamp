@@ -4,8 +4,11 @@ from sqlalchemy.orm import sessionmaker
 
 DATABASE_URL = "mysql+pymysql://root:password@db:3306/app_db"
 
-engine = create_engine(DATABASE_URL)
+engine = create_async_engine(DATABASE_URL, echo=True)
 
-SessionFactory = sessionmaker(
-    bind=engine, autocommit=False, autoflush=False, expire_on_commit=False
+AsyncSessionFactory = sessionmaker(
+    bind=engine, class_=AsyncSession, autocommit=False, autoflush=False, expire_on_commit=False
 )
+
+
+Base.metadata.create_all(bind=engine)
