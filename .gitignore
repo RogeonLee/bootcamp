@@ -38,6 +38,10 @@ Thumbs.db
 *.log
 logs/
 
+# 데이터베이스
+*.sqlite
+*.db
+
 # 기타
 node_modules/
 *.egg-info/
