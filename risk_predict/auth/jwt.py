@@ -1,16 +1,51 @@
 import jwt
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 
-payload = {
-    "exp": datetime.now(timezone.utc) + timedelta(hours=24),  # 만료 시간
-    "sub": 1,            # subject - 누구의 토큰인지 (보통 user_id)
-    "hello": "world"     # 아무 정보나 추가 가능
-}
+from fastapi import HTTPException, status, Depends
+from fastapi.security import HTTPBearer
 
-# 토큰 생성 (인코딩)
-access_token = jwt.encode(payload, "secret", algorithm="HS256")
-print("토큰:", access_token)
+from config import settings
 
-# 토큰 검증 (디코딩)
-decoded = jwt.decode(access_token, "secret", algorithms=["HS256"])
-print("디코딩 결과:", decoded)
+
+# accesss_token 발급 
+def create_access_token(user_id: int) -> str:
+    payload = {
+        "sub": str(user_id),
+        "exp": datetime.now(timezone.utc) + timedelta(hours=24)
+    }
+
+    return jwt.encode(
+        payload=payload, key=settings.JWT_SECRET, algorithm="HS256"
+    )
+
+# access_token의 위변조 여부 확인 & payload 읽는 함수
+def verify_access_token(access_token: str) -> dict:
+    try:
+        payload = jwt.decode(
+            access_token, settings.JWT_SECRET, algorithms=["HS256"]
+        )
+    except jwt.DecodeError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="잘못된 토큰 형식입니다.",
+        )
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="만료된 토큰입니다.",
+        )
+    return payload
+
+
+def verify_user(
+    auth_header = Depends(HTTPBearer())
+):
+    access_token = auth_header.credentials
+    payload = verify_access_token(access_token=access_token)
+    user_id = payload.get("sub")
+    if not user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="sub 값이 없습니다."
+        )
+    return user_id

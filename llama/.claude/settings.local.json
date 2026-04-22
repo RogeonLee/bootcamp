@@ -1,7 +1,11 @@
 {
   "permissions": {
     "allow": [
-      "Bash(gh auth:*)"
+      "Bash(gh auth:*)",
+      "Bash(open /Users/rogan/llama/submission)",
+      "Bash(mkdir -p /Users/rogan/DEV/llama/submission)",
+      "Bash(cp /Users/rogan/DEV/llama/main.py /Users/rogan/DEV/llama/test.py /Users/rogan/DEV/llama/submission/)",
+      "Bash(open /Users/rogan/DEV/llama/submission)"
     ]
   }
 }

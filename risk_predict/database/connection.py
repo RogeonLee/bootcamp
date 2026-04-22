@@ -1,6 +1,7 @@
 from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker
 
-DATABASE_URL = "sqlite+aiosqlite:///./db/sqlite"
+
+DATABASE_URL = "sqlite+aiosqlite:///./db.sqlite"
 
 engine = create_async_engine(DATABASE_URL)
 
@@ -17,4 +18,3 @@ async def get_session():
         yield session
     finally:
         await session.close()
-        
